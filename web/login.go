@@ -30,7 +30,16 @@ func (h *Handler) login(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	input := aboba.LoginInput{
 		Email:    r.PostFormValue("email"),
-		Username: nil,
+		Username: formPtr(r.PostForm, "username"),
 	}
 	h.Service.Login(ctx, input)
+}
+
+func formPtr(form url.Values, key string) *string {
+	if !form.Has(key) {
+		return nil
+	}
+
+	s := form.Get(key)
+	return &s
 }
