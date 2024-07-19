@@ -11,7 +11,7 @@
             </div>
 
             {{with .Err}}
-            {{if or (eq .Error "user not found") (eq .Error "username taken")}}
+            {{if or (eq .Error "user not found") (eq .Error "username taken") (eq .Error "invalid username")}}
             <div> 
                 <label for="username">Username</label>
                 <input type="text" name="username" id="username" placeholder="abibaboba" value='{{$.Form.Get "username"}}' required>
