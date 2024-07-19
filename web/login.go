@@ -2,6 +2,7 @@ package web
 
 import (
 	"aboba"
+	"errors"
 	"net/http"
 	"net/url"
 )
@@ -32,7 +33,27 @@ func (h *Handler) login(w http.ResponseWriter, r *http.Request) {
 		Email:    r.PostFormValue("email"),
 		Username: formPtr(r.PostForm, "username"),
 	}
-	h.Service.Login(ctx, input)
+	user, err := h.Service.Login(ctx, input)
+	if errors.Is(err, aboba.ErrUserNotFound) || errors.Is(err, aboba.ErrUsernameTaken) {
+		h.renderLogin(w, loginData{
+			Form: r.PostForm,
+			Err:  err,
+		}, http.StatusBadRequest)
+		return
+	}
+	if err != nil {
+		h.Logger.Printf("could not login: %v\n", err)
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	h.session.Put(r, "user", user)
+	http.Redirect(w, r, "/", http.StatusFound)
+}
+
+func (h *Handler) logout(w http.ResponseWriter, r *http.Request) {
+	h.session.Remove(r, "user")
+	http.Redirect(w, r, "/", http.StatusFound)
 }
 
 func formPtr(form url.Values, key string) *string {
