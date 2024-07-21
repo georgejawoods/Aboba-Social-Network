@@ -6,6 +6,7 @@ require (
 	github.com/alecthomas/assert/v2 v2.10.0
 	github.com/golangcollege/sessions v1.2.0
 	github.com/lib/pq v1.10.9
+	github.com/nicolasparada/go-errs v0.4.0
 	github.com/nicolasparada/go-mux v0.3.1
 	github.com/ory/dockertest/v3 v3.10.0
 	github.com/rs/xid v1.5.0
@@ -38,7 +39,6 @@ require (
 	github.com/containerd/continuity v0.4.3 // indirect
 	github.com/docker/go-connections v0.5.0 // indirect
 	github.com/docker/go-units v0.5.0 // indirect
-	github.com/nicolasparada/go-errs v0.4.0 // indirect
 	github.com/opencontainers/go-digest v1.0.0 // indirect
 	github.com/opencontainers/image-spec v1.1.0 // indirect
 	github.com/opencontainers/runc v1.1.13 // indirect
@@ -46,4 +46,5 @@ require (
 	github.com/sirupsen/logrus v1.9.3 // indirect
 	golang.org/x/crypto v0.25.0 // indirect
 	golang.org/x/sys v0.22.0 // indirect
+	mvdan.cc/xurls/v2 v2.5.0
 )

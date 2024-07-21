@@ -6,14 +6,27 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+
+	"mvdan.cc/xurls/v2"
 )
 
 //go:embed template/include/*.tmpl template/*.tmpl
 var templateFS embed.FS
 
+var tmplFuncs = template.FuncMap{
+	"linkify": linkify,
+}
+
+var reURL = xurls.Relaxed()
+
+func linkify(s string) template.HTML {
+	s = template.HTMLEscapeString(s)
+	return template.HTML(reURL.ReplaceAllString(s, `<a href="$0" target="_blank" rel="noopener noreferrer">$0</a>`))
+}
+
 func parseTmpl(name string) *template.Template {
-	tmpl := template.New(name)
-	tmpl = template.Must(template.ParseFS(templateFS, "template/include/*.tmpl"))
+	tmpl := template.New(name).Funcs(tmplFuncs)
+	tmpl = template.Must(tmpl.ParseFS(templateFS, "template/include/*.tmpl"))
 	return template.Must(tmpl.ParseFS(templateFS, "template/"+name))
 }
 

@@ -2,12 +2,20 @@ package aboba
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 	"strings"
 	"time"
 	"unicode/utf8"
 
 	"github.com/nicolasparada/go-errs"
+	"github.com/rs/xid"
+)
+
+const (
+	ErrInvalidPostID      = errs.InvalidArgumentError("invalid post ID")
+	ErrInvalidPostContent = errs.InvalidArgumentError("invalid post content")
+	ErrPostNotFound       = errs.NotFoundError("post not found")
 )
 
 var ErrUnauthenticated = errors.New("unauthenticated")
@@ -24,7 +32,7 @@ func (in *CreatePostInput) Prepare() {
 
 func (in *CreatePostInput) Validate() error {
 	if in.Content == "" || utf8.RuneCountInString(in.Content) > 1000 {
-		return errs.InvalidArgumentError("invalid post content")
+		return ErrInvalidPostContent
 	}
 	return nil
 }
@@ -61,4 +69,25 @@ func (svc *Service) CreatePost(ctx context.Context, in CreatePostInput) (CreateP
 	out.CreatedAt = createdAt
 
 	return out, nil
+}
+
+func (svc *Service) Posts(ctx context.Context) ([]PostsRow, error) {
+	return svc.Queries.Posts(ctx)
+}
+
+func (svc *Service) Post(ctx context.Context, postID string) (PostRow, error) {
+	if !isID(postID) {
+		return PostRow{}, ErrInvalidPostID
+	}
+	p, err := svc.Queries.Post(ctx, postID)
+	if errors.Is(err, sql.ErrNoRows) {
+		return PostRow{}, ErrPostNotFound
+	}
+
+	return p, err
+}
+
+func isID(s string) bool {
+	_, err := xid.FromString(s)
+	return err == nil
 }
