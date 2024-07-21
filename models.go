@@ -18,11 +18,12 @@ type Comment struct {
 }
 
 type Post struct {
-	ID        string
-	UserID    string
-	Content   string
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID            string
+	UserID        string
+	Content       string
+	CommentsCount int32
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
 }
 
 type User struct {

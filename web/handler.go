@@ -47,7 +47,11 @@ func (h *Handler) init() {
 	})
 
 	r.Handle("/p/{postID}", mux.MethodHandler{
-		http.MethodGet: h.post,
+		http.MethodGet: h.showPost,
+	})
+
+	r.Handle("/comments", mux.MethodHandler{
+		http.MethodPost: h.createComment,
 	})
 
 	r.Handle("/*", mux.MethodHandler{

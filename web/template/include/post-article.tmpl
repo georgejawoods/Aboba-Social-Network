@@ -13,6 +13,10 @@
     </div>
 
     <p>{{linkify .Content}}</p>
+
+    <div>
+        <a href="/p/{{.ID}}" title="{[CommentsCount]} comments">{{.CommentsCount}} 💬</a>
+    </div>
 </article>
 
 {{define "head"}}

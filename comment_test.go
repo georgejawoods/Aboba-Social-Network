@@ -76,13 +76,16 @@ func TestService_Comments(t *testing.T) {
 		usr := genUser(t)
 		post := genPost(t, usr.ID)
 
-		want := 1
+		want := 10
+		k := 0
 		for i := 0; i < want; i++ {
 			_ = genComment(t, usr.ID, post.ID)
+			k++
 		}
 
 		got, err := svc.Comments(ctx, post.ID)
 		assert.NoError(t, err)
+		assert.Equal(t, want, k)
 		for _, p := range got {
 			assert.NotZero(t, p)
 		}
